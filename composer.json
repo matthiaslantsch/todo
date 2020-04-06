@@ -5,14 +5,47 @@
 	"authors": [
 		{
 			"name": "matthias.lantsch",
-			"email": "matthias.lantsch@terreactive.ch"
+			"email": "matthias.lantsch@bluewin.ch"
+		}
+	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://holonet.easylabs.ch/composer/"
 		}
 	],
 	"autoload": {
 		"psr-4" : {
-			"holonet\\todo\\" : "",
-			"holonet\\todo\\tests\\" : "tests/"
+			"holonet\\todo\\" : "src/"
 		}
 	},
-	"require": {}
+	"require": {
+		"php": ">=7.3",
+		"holonet/common": "dev-develop",
+		"holonet/holofw": "dev-develop",
+		"holonet/http": "dev-develop",
+		"holonet/cli": "dev-develop",
+		"holonet/dbconnect": "dev-develop",
+		"holonet/activerecord": "dev-develop",
+		"holonet/dbtypes": "dev-develop",
+		"holonet/dbmigrate": "dev-develop",
+		"holonet/sphinxauth": "dev-develop",
+		"holonet/riddle": "dev-develop"
+	},
+	"require-dev": {
+		"filp/whoops": "^2.5",
+		"friendsofphp/php-cs-fixer": "^2.11",
+		"vimeo/psalm": "^3.5",
+		"symfony/var-dumper": "^5.0"
+	},
+	"scripts": {
+		"fix": [
+			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --ansi"
+		],
+		"test": [
+			"@composer validate",
+			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --dry-run --ansi",
+			"@php -d memory_limit=-1 vendor/vimeo/psalm/psalm"
+		]
+	}
 }

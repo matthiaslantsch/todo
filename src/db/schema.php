@@ -1,5 +1,4 @@
 <?php
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,21 +9,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-use holonet\activerecord\Schema;
+use holonet\activerecord\Database;
+use holonet\dbmigrate\builder\TableBuilder;
+
+if(!isset($database) || !$database instanceof Database) {
+	throw new LogicException("Cannot include database schema without supplying the database object");
+}
+$schema = $database->schema();
+
+##
+## user #
+##
+$schema->createTable("user", function(TableBuilder $table) {
+	$table->string("username");
+	$table->addColumn("externalid", "uuid");
+	$table->version("1536731312");
+});
 
 ##
 ## bank #
 ##
-Schema::createTable("bank", function($table) {
-	$table->integer("sphinx_id");
+$schema->createTable("bank", function(TableBuilder $table) {
 	$table->float("bank", 10, 0)->default(0);
+	$table->integer("idUser");
 	$table->version("1536731313");
 });
 
 ##
 ## task #
 ##
-Schema::createTable("task", function($table) {
+$schema->createTable("task", function(TableBuilder $table) {
 	$table->string("name", 40);
 	$table->timestamp("duedate");
 	$table->integer("steps")->default(1);
@@ -33,14 +47,14 @@ Schema::createTable("task", function($table) {
 	$table->integer("stepreward")->default(0);
 	$table->integer("donereward")->default(0);
 	$table->integer("priority")->default(1);
-	$table->integer("sphinx_id");
+	$table->integer("idUser");
 	$table->version("1536731314");
 });
 
 ##
 ## reward #
 ##
-Schema::createTable("reward", function($table) {
+$schema->createTable("reward", function(TableBuilder $table) {
 	$table->integer("idTask");
 	$table->string("key", 10);
 	$table->integer("amount");
@@ -48,9 +62,25 @@ Schema::createTable("reward", function($table) {
 });
 
 ##
+## bank references #
+##
+$schema->changeTable("bank", function(TableBuilder $table) {
+	$table->addReference("user", "idUser", "idUser");
+	$table->version("1536731313");
+});
+
+##
+## task references #
+##
+$schema->changeTable("task", function(TableBuilder $table) {
+	$table->addReference("user", "idUser", "idUser");
+	$table->version("1536731314");
+});
+
+##
 ## reward references #
 ##
-Schema::changeTable("reward", function($table) {
+$schema->changeTable("reward", function(TableBuilder $table) {
 	$table->addReference("task", "idTask", "idTask");
 	$table->version("1536731315");
 });

@@ -3,46 +3,50 @@
  * This file is part of the holonet todo tracking app
  * (c) Matthias Lantsch
  *
- * php route definition file
- *
  * @package holonet todo app
  * @license http://www.wtfpl.net/ Do what the fuck you want Public License
  * @author  Matthias Lantsch <matthias.lantsch@bluewin.ch>
  */
 
-use holonet\holofw\FWRouter;
+use holonet\holofw\route\FWRouter;
+use holonet\todo\controllers\TasksController;
 
-FWRouter::index(array(
-	"controller" => "tasks",
+/**
+ * @var FWRouter $router
+ */
+$router = $this->router;
+
+$router->index(array(
+	"controller" => TasksController::class,
 	"method" => "homepage"
 ));
 
-FWRouter::post(array(
+$router->post(array(
 	"url" => "tasks/index",
-	"controller" => "tasks",
+	"controller" => TasksController::class,
 	"method" => "index"
 ));
 
-FWRouter::post(array(
+$router->post(array(
 	"url" => "tasks",
-	"controller" => "tasks",
+	"controller" => TasksController::class,
 	"method" => "create"
 ));
 
-FWRouter::put(array(
+$router->put(array(
 	"url" => "tasks/[idTask:i]",
-	"controller" => "tasks",
+	"controller" => TasksController::class,
 	"method" => "update"
 ));
 
-FWRouter::delete(array(
+$router->delete(array(
 	"url" => "tasks/[idTask:i]",
-	"controller" => "tasks",
+	"controller" => TasksController::class,
 	"method" => "delete"
 ));
 
-FWRouter::post(array(
+$router->post(array(
 	"url" => "bank",
-	"controller" => "tasks",
+	"controller" => TasksController::class,
 	"method" => "bankChange"
 ));
