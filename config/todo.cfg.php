@@ -18,6 +18,7 @@ $config["database"] = array(
 	"file" => "%env(DB_FILE)%",
 	"host" => "%env(DB_HOST)%",
 	"port" => "%env(DB_PORT)%",
+	"socket" => "%env(DB_SOCKET)%",
 	"username" => "%env(DB_USER)%",
 	"password" => "%env(DB_PASSWORD)%",
 );

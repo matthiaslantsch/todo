@@ -18,6 +18,6 @@
 		});
 
 		</script>
-		<script src="<?=linkJs("todo")?>"></script>
+		<script src="<?=$_urlhelper->linkJs("todo")?>"></script>
 	</body>
 </html>
