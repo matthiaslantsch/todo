@@ -18,21 +18,22 @@ if(!isset($database) || !$database instanceof Database) {
 $schema = $database->schema();
 
 ##
+## reward #
+##
+$schema->createTable("reward", function(TableBuilder $table) {
+	$table->integer("idTask");
+	$table->string("key", 10);
+	$table->integer("amount");
+	$table->version("1536731315");
+});
+
+##
 ## user #
 ##
 $schema->createTable("user", function(TableBuilder $table) {
 	$table->string("username");
-	$table->addColumn("externalid", "uuid");
+	$table->addColumn("externalid", "uuid")->unique();
 	$table->version("1536731312");
-});
-
-##
-## bank #
-##
-$schema->createTable("bank", function(TableBuilder $table) {
-	$table->float("bank", 10, 0)->default(0);
-	$table->integer("idUser");
-	$table->version("1536731313");
 });
 
 ##
@@ -52,20 +53,11 @@ $schema->createTable("task", function(TableBuilder $table) {
 });
 
 ##
-## reward #
+## bank #
 ##
-$schema->createTable("reward", function(TableBuilder $table) {
-	$table->integer("idTask");
-	$table->string("key", 10);
-	$table->integer("amount");
-	$table->version("1536731315");
-});
-
-##
-## bank references #
-##
-$schema->changeTable("bank", function(TableBuilder $table) {
-	$table->addReference("user", "idUser", "idUser");
+$schema->createTable("bank", function(TableBuilder $table) {
+	$table->float("bank", 10, 0)->default(0);
+	$table->integer("idUser");
 	$table->version("1536731313");
 });
 
@@ -78,9 +70,9 @@ $schema->changeTable("task", function(TableBuilder $table) {
 });
 
 ##
-## reward references #
+## bank references #
 ##
-$schema->changeTable("reward", function(TableBuilder $table) {
-	$table->addReference("task", "idTask", "idTask");
-	$table->version("1536731315");
+$schema->changeTable("bank", function(TableBuilder $table) {
+	$table->addReference("user", "idUser", "idUser");
+	$table->version("1536731313");
 });
