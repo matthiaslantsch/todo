@@ -141,7 +141,6 @@ class TasksController extends FWController {
 			$ranges = array('critical' => 5, 'important' => 4);
 			$day = new DateTime('monday this week');
 			while (($wday = $day->format('l')) !== 'Saturday') {
-
 				/** @psalm-suppress PossiblyInvalidArrayAssignment */
 				$ranges[$wday]['from'] = $day->format('Y-m-d H:i:s');
 				$day->modify('+1 day');
@@ -155,6 +154,13 @@ class TasksController extends FWController {
 			$day->modify('+2 days');
 			/** @psalm-suppress PossiblyInvalidArrayAssignment */
 			$ranges['weekend']['to'] = $day->format('Y-m-d H:i:s');
+
+			$day->modify('+1 day');
+			/** @psalm-suppress PossiblyInvalidArrayAssignment */
+			$ranges['later']['from'] = $day->format('Y-m-d H:i:s');
+			$day->modify('+1 year');
+			/** @psalm-suppress PossiblyInvalidArrayAssignment */
+			$ranges['later']['to'] = $day->format('Y-m-d H:i:s');
 			//make it a sequential array to keep the order
 			$this->view->set('showconfig', $ranges);
 		}

@@ -27,15 +27,31 @@ $config["vendorInfo"] = array(
 	"namespace" => "holonet"
 );
 
-$config["auth"] = array(
-	"realm" => "sphinx_auth",
-	"flow" => \holonet\sphinxauth\SphinxAuthFlow::class,
-	"usermodel" => \holonet\todo\models\UserModel::class,
-	"loginurl" => "",
-	"sphinx" => array(
-		"provider_url" => "%env(SPHINX_URL)%",
-		"client_id" => "%env(SPHINX_CLIENT_ID)%",
-		"client_secret" => "%env(SPHINX_CLIENT_SECRET)%",
-		"realm" => "%env(SPHINX_REALM)%"
-	)
-);
+
+
+if(filter_var($_ENV['USE_REMOTE_AUTH_SYSTEM'], FILTER_VALIDATE_BOOLEAN)) {
+	$config["auth"] = array(
+		"realm" => "sphinx_auth",
+		"flow" => \holonet\sphinxauth\SphinxAuthFlow::class,
+		"usermodel" => \holonet\todo\models\UserModel::class,
+		"loginurl" => "",
+		"sphinx" => array(
+			"provider_url" => "%env(SPHINX_URL)%",
+			"client_id" => "%env(SPHINX_CLIENT_ID)%",
+			"client_secret" => "%env(SPHINX_CLIENT_SECRET)%",
+			"realm" => "%env(SPHINX_REALM)%"
+		)
+	);
+} elseif(filter_var($_ENV['DEV_MODE'], FILTER_VALIDATE_BOOLEAN)) {
+	$config["auth"] = array(
+		"flow" => \holonet\holofw\auth\flow\PromptAuthFlow::class,
+		"handler" => \holonet\holofw\auth\handler\DevAuthHandler::class,
+		"usermodel" => \holonet\todo\models\UserModel::class,
+	);
+} else {
+	$config["auth"] = array(
+		"flow" => \holonet\holofw\auth\flow\PromptAuthFlow::class,
+		"handler" => \holonet\holofw\auth\handler\FlatfileAuthHandler::class,
+		"usermodel" => \holonet\todo\models\UserModel::class,
+	);
+}
