@@ -1,8 +1,8 @@
 function loadTodos() {
 	$.ajax({
-		type: 'POST',
+		type: 'GET',
 		data: {"query": $("#table").data("showconfig")},
-		url: returnFWAlias() + "tasks/index",
+		url: returnFWAlias() + "tasks",
 		dataType: "html", //does not work in IE??
 		success: function(res) {
 			$("#table").html(res);

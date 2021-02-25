@@ -10,18 +10,17 @@
 namespace holonet\todo\models;
 
 use holonet\activerecord\ModelBase;
+use holonet\activerecord\annotation\Table;
+use holonet\activerecord\annotation\relation\BelongsTo;
 
 /**
- * BankModel class to wrap around the "bank" database table.
+ * @Table("bank")
  */
 class BankModel extends ModelBase {
-	/**
-	 * @var array $belongsTo Array with definitions for a belongsTo relationship
-	 */
-	public static $belongsTo = array('user');
+	protected float $bank = 0;
 
 	/**
-	 * @var array $defaults Array with defaults for attributes
+	 * @BelongsTo("user")
 	 */
-	protected static $defaults = array('bank' => 0);
+	protected UserModel $user;
 }

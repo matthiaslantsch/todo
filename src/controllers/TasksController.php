@@ -17,15 +17,14 @@ use holonet\todo\helpers\TaskList;
 use holonet\todo\models\BankModel;
 use holonet\todo\models\TaskModel;
 use holonet\todo\models\UserModel;
+use holonet\holofw\annotation\REST;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * TasksController exposing the task REST resource to the application user.
+ * @REST("tasks")
  */
 class TasksController extends FWController {
-	/**
-	 * @var UserModel $user The model for the user that is using the application
-	 */
-	private $user;
+	private UserModel $user;
 
 	/**
 	 * Authenticate the user first and save his reference in here.
@@ -36,15 +35,12 @@ class TasksController extends FWController {
 		}
 		/** @var User $sessionUser */
 		$sessionUser = $this->session()->get('user');
-		/**
-		 * @psalm-suppress PossiblyNullArgument
-		 * @var UserModel
-		 */
-		$this->user = $this->di_repo->find(UserModel::class, $sessionUser->internalid);
+		/** @var UserModel user */
+		$this->user = $sessionUser->usermodel;
 	}
 
 	/**
-	 * POST /bank
+	 * @Route("/bank", methods={"POST"})
 	 * method used to update the reward bank of a user.
 	 */
 	public function bankChange(): void {
@@ -55,18 +51,19 @@ class TasksController extends FWController {
 	}
 
 	/**
-	 * POST /tasks
 	 * method used to create a new task.
 	 */
 	public function create(): void {
 		$rawdata = array(
-			'datetime' => $this->request->request->get('datetime', new DateTime()),
+			'datetime' => $this->request->request->get('datetime', null),
 			'priority' => $this->request->request->getInt('priority', 1),
-			'description' => $this->request->request->get('description', ''),
+			'description' => $this->request->request->get('description'),
 		);
 
+		$rawdata['datetime'] ??= new DateTime();
+
 		if ($rawdata['description'] !== '') {
-			preg_match('/^(.+?) ?(?:\\[(\\d+)\\]|)$/', strip_tags($rawdata['description']), $matches);
+			preg_match('/^(.+?) ?(?:\\[(\\d+)\\]|)$/', strip_tags($rawdata['description'] ?? ''), $matches);
 			$rawdata['description'] = $matches[1];
 		}
 
@@ -93,24 +90,9 @@ class TasksController extends FWController {
 		$this->respondTo('json');
 	}
 
-	/**
-	 * DELETE /tasks/[{$id}:i]
-	 * method used to delete a task entry.
-	 * @param int $id The id of the task to be deleted
-	 */
-	public function delete(int $id): void {
-		if (($task = $this->di_repo->find(TaskModel::class, $id)) === null) {
-			$this->notFound("task with the id '#{$id}'");
-
-			return;
-		}
-
+	public function delete(TaskModel $task): void {
 		if ($task->idUser !== $this->user->id) {
-			$this->notAllowed(
-				"User with id '{$this->user->id}' is not allowed to change/delete other users' tasks"
-			);
-
-			return;
+			throw $this->notAllowed("User with id '{$this->user->id}' is not allowed to change/delete other users' tasks");
 		}
 
 		$this->view->set('errors', $task->delete());
@@ -118,7 +100,7 @@ class TasksController extends FWController {
 	}
 
 	/**
-	 * ANY / (root homepage).
+	 * @Route("/", name="homepage")
 	 */
 	public function homepage(): void {
 		$this->view->set('title', "Todos for {$this->user->username}");
@@ -160,20 +142,14 @@ class TasksController extends FWController {
 		}
 	}
 
-	/**
-	 * POST /tasks/index
-	 * Display an index listing via json / html.
-	 */
 	public function index(): void {
 		$this->view->set('bank', $this->di_repo->getOrCreate(BankModel::class, array('user' => $this->user)));
 
-		if (!$this->request->request->has('query')) {
-			$this->notFound('No search query definition was submitted');
-
-			return;
+		$query = $this->request->query->get('query');
+		if (!is_array($query)) {
+			throw $this->notFound('No search query definition was submitted');
 		}
 
-		$query = $this->request->request->get('query');
 		$search = new TaskList($this->di_repo, $this->user->id);
 		foreach ($query as $name => $range) {
 			if (is_array($range) && count($range) >= 2) {
@@ -195,26 +171,12 @@ class TasksController extends FWController {
 		});
 	}
 
-	/**
-	 * PUT /tasks/[{$id}:i]
-	 * method used to submit a change to an existing task entry.
-	 * @param int $id The id of the task to be edited
-	 */
-	public function update(int $id): void {
-		if (($task = $this->di_repo->find(TaskModel::class, $id)) === null) {
-			$this->notFound("task with the id '#{$id}'");
-
-			return;
-		}
-
+	public function update(TaskModel $task): void {
 		if ($task->idUser !== $this->user->id) {
-			$this->notAllowed(
-				"User with id '{$this->user->id}' is not allowed to change/delete other users' tasks"
-			);
-
-			return;
+			throw $this->notAllowed("User with id '{$this->user->id}' is not allowed to change/delete other users' tasks");
 		}
 
+		$this->di_database->transaction();
 		if ((bool)($this->request->request->get('done'))) {
 			$task->donedate = new DateTime();
 			if ($task->save()) {
@@ -224,6 +186,8 @@ class TasksController extends FWController {
 				$bank->save();
 			}
 		}
+		$this->di_database->commit();
+
 		$this->view->set('errors', false);
 		$this->respondTo('json');
 	}

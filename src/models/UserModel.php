@@ -9,35 +9,42 @@
 
 namespace holonet\todo\models;
 
-use holonet\activerecord\ModelBase;
-use holonet\holofw\auth\UserModelInterface;
+use holonet\activerecord\sets\ModelSet;
+use holonet\activerecord\annotation\Table;
 use holonet\holofw\auth\StandardUserModelTrait;
+use holonet\activerecord\annotation\relation\HasOne;
+use holonet\activerecord\annotation\relation\HasMany;
+use holonet\activerecord\annotation\validate\Required;
 
 /**
- * UserModel class to wrap around the "user" database table.
+ * @Table("user")
  */
-class UserModel extends ModelBase implements UserModelInterface {
+class UserModel extends \holonet\holofw\auth\UserModel {
 	use StandardUserModelTrait;
 
 	/**
-	 * @var array $hasMany Relationship mappings
+	 * @HasOne("bank")
 	 */
-	public static $hasMany = array('tasks');
+	protected BankModel $bank;
 
 	/**
-	 * @var array $hasOne Array with hasOne relationship mappings
+	 * @Required
 	 */
-	public static $hasOne = array('bank' => array('forced' => false));
+	protected string $externalid;
 
 	/**
-	 * @var array $validate Array with verification data for some of the columns
+	 * @var ModelSet|TaskModel[] $tasks
+	 * @HasMany("tasks")
 	 */
-	public static $validate = array(
-		'username' => array('presence')
-	);
+	protected ModelSet $tasks;
 
 	/**
-	 * {@inheritdoc}
+	 * @Required
+	 */
+	protected string $username;
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public static function supportedUserClaims(): array {
 		return array(

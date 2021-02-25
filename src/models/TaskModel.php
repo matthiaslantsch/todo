@@ -10,21 +10,44 @@
 namespace holonet\todo\models;
 
 use holonet\activerecord\ModelBase;
+use holonet\activerecord\annotation\Table;
+use holonet\activerecord\ChangeAwareDatetime;
+use holonet\activerecord\annotation\validate\Length;
+use holonet\activerecord\annotation\validate\Required;
+use holonet\activerecord\annotation\relation\BelongsTo;
 
 /**
- * TaskModel class to wrap around the "task" database table.
+ * @Table("task")
  */
 class TaskModel extends ModelBase {
-	/**
-	 * @var array $belongsTo Array with definitions for a belongsTo relationship
-	 */
-	public static $belongsTo = array('user');
+	protected ?ChangeAwareDatetime $donedate;
+
+	protected int $donereward = 0;
+
+	protected int $donesteps = 0;
 
 	/**
-	 * @var array $validate Array with verification data
+	 * @Required
 	 */
-	public static $validate = array(
-		'duedate' => array('presence'),
-		'name' => array('presence', 'length' => array('min' => 5, 'max' => 40))
-	);
+	protected ChangeAwareDatetime $duedate;
+
+	/**
+	 * @Required
+	 * @Length(max=100)
+	 */
+	protected string $name;
+
+	protected int $priority = 1;
+
+	protected int $stepreward = 0;
+
+	/**
+	 * @Required
+	 */
+	protected int $steps = 0;
+
+	/**
+	 * @BelongsTo("user")
+	 */
+	protected UserModel $user;
 }
