@@ -5,9 +5,13 @@
 		<button class="btn btn-default btn-sm" onclick="changeBank(-200)">-200</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(-100)">-100</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(-50)">-50</button>
+		<button class="btn btn-default btn-sm" onclick="changeBank(-10)">-10</button>
+		<button class="btn btn-default btn-sm" onclick="changeBank(-5)">-5</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(-1)">-1</button>
 		<button class="btn btn-default btn-lg" disabled><?=$bank->bank?>c</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(+1)">+1</button>
+		<button class="btn btn-default btn-sm" onclick="changeBank(+5)">+5</button>
+		<button class="btn btn-default btn-sm" onclick="changeBank(+10)">+10</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(+50)">+50</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(+100)">+100</button>
 		<button class="btn btn-default btn-sm" onclick="changeBank(+200)">+200</button>
@@ -15,7 +19,6 @@
 		<button class="btn btn-default btn-sm" onclick="changeBank(+1000)">+1000</button>
 	</div>
 </div>
-<hr>
 <?php foreach($results as $title => $group): ?>
 	<?php if(!empty($group)): ?>
 		<h2><?=ucfirst($title)?></h2>

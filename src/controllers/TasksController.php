@@ -111,8 +111,12 @@ class TasksController extends FWController {
 			$this->view->set('showconfig', array(
 				'critical' => 5,
 				'important' => 4,
-				'weekend' => array(
+				'Saturday' => array(
 					'from' => date('Y-m-d H:i:s', strtotime('saturday')),
+					'to' => date('Y-m-d H:i:s', strtotime('sunday')),
+				),
+				'Sunday' => array(
+					'from' => date('Y-m-d H:i:s', strtotime('Sunday')),
 					//go to end of sunday => monday midnight
 					'to' => date('Y-m-d H:i:s', strtotime('monday')),
 				)
