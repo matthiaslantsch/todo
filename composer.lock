@@ -249,11 +249,11 @@
         },
         {
             "name": "holonet/activerecord",
-            "version": "2.2.2",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-activerecord/repo/holonet-activerecord.git",
-                "reference": "2.2.2"
+                "reference": "2.2.3"
             },
             "require": {
                 "doctrine/annotations": "^1.10",
@@ -584,11 +584,11 @@
         },
         {
             "name": "holonet/holofw",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://holonet.easylabs.ch/hgit/holonet-holofw/repo/holonet-holofw.git",
-                "reference": "3.3.0"
+                "reference": "3.3.1"
             },
             "require": {
                 "doctrine/annotations": "^1.10",
