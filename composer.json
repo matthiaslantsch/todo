@@ -11,13 +11,11 @@
 	],
 	"require": {
 		"php": ">=7.4",
-		"holonet/holofw": "^3.3.0",
-		"holonet/sphinxauth": "^1.1.0"
+		"holonet/holofw": "~3.3.0",
+		"holonet/sphinxauth": "~1.1.0"
 	},
 	"require-dev": {
-		"filp/whoops": "^2.5",
-		"holonet/hdev": "^1.0",
-		"symfony/var-dumper": "^5.0"
+		"holonet/hdev": "~1.0.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -30,7 +28,6 @@
 			"url": "https://holonet.easylabs.ch/hgit/composer/"
 		}
 	],
-	"minimum-stability": "dev",
 	"scripts": {
 		"fix": [
 			"@composer normalize --diff",
