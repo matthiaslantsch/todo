@@ -18,38 +18,12 @@ if(!isset($database) || !$database instanceof Database) {
 $schema = $database->schema();
 
 ##
-## reward #
-##
-$schema->createTable("reward", function(TableBuilder $table) {
-	$table->integer("idTask");
-	$table->string("key", 10);
-	$table->integer("amount");
-	$table->version("1536731315");
-});
-
-##
 ## user #
 ##
 $schema->createTable("user", function(TableBuilder $table) {
 	$table->string("username");
 	$table->addColumn("externalid", "uuid")->unique();
 	$table->version("1536731312");
-});
-
-##
-## task #
-##
-$schema->createTable("task", function(TableBuilder $table) {
-	$table->string("name", 40);
-	$table->timestamp("duedate");
-	$table->integer("steps")->default(1);
-	$table->integer("donesteps")->default(0);
-	$table->timestamp("donedate")->nullable();
-	$table->integer("stepreward")->default(0);
-	$table->integer("donereward")->default(0);
-	$table->integer("priority")->default(1);
-	$table->integer("idUser");
-	$table->version("1536731314");
 });
 
 ##
@@ -62,11 +36,29 @@ $schema->createTable("bank", function(TableBuilder $table) {
 });
 
 ##
-## task references #
+## reward #
 ##
-$schema->changeTable("task", function(TableBuilder $table) {
-	$table->addReference("user", "idUser", "idUser");
-	$table->version("1536731314");
+$schema->createTable("reward", function(TableBuilder $table) {
+	$table->integer("idTask");
+	$table->string("key", 10);
+	$table->integer("amount");
+	$table->version("1536731315");
+});
+
+##
+## task #
+##
+$schema->createTable("task", function(TableBuilder $table) {
+	$table->string("name", 100);
+	$table->timestamp("duedate");
+	$table->integer("steps")->default(1);
+	$table->integer("donesteps")->default(0);
+	$table->timestamp("donedate")->nullable();
+	$table->integer("stepreward")->default(0);
+	$table->integer("donereward")->default(0);
+	$table->integer("priority")->default(1);
+	$table->integer("idUser");
+	$table->version("1536731316");
 });
 
 ##
@@ -75,4 +67,20 @@ $schema->changeTable("task", function(TableBuilder $table) {
 $schema->changeTable("bank", function(TableBuilder $table) {
 	$table->addReference("user", "idUser", "idUser");
 	$table->version("1536731313");
+});
+
+##
+## reward references #
+##
+$schema->changeTable("reward", function(TableBuilder $table) {
+	$table->addReference("task", "idTask", "idTask");
+	$table->version("1536731315");
+});
+
+##
+## task references #
+##
+$schema->changeTable("task", function(TableBuilder $table) {
+	$table->addReference("user", "idUser", "idUser");
+	$table->version("1536731316");
 });

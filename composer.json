@@ -1,37 +1,36 @@
 {
 	"name": "holonet/todo",
-	"description": "Todo list app with point reward tracking",
 	"type": "project",
+	"description": "Todo list app with point reward tracking",
+	"license": "proprietary",
 	"authors": [
 		{
 			"name": "matthias.lantsch",
 			"email": "matthias.lantsch@bluewin.ch"
 		}
 	],
+	"require": {
+		"php": ">=7.4",
+		"holonet/holofw": "~3.3.0",
+		"holonet/sphinxauth": "~1.1.0"
+	},
+	"require-dev": {
+		"holonet/hdev": "~1.0.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"holonet\\todo\\": "src/"
+		}
+	},
 	"repositories": [
 		{
 			"type": "composer",
 			"url": "https://holonet.easylabs.ch/hgit/composer/"
 		}
 	],
-	"autoload": {
-		"psr-4" : {
-			"holonet\\todo\\" : "src/"
-		}
-	},
-	"require": {
-		"php": ">=7.3",
-		"holonet/holofw": "^3.2.0",
-		"holonet/sphinxauth": "^1.0.0"
-	},
-	"require-dev": {
-		"filp/whoops": "^2.5",
-		"friendsofphp/php-cs-fixer": "^2.11",
-		"vimeo/psalm": "^3.5",
-		"symfony/var-dumper": "^5.0"
-	},
 	"scripts": {
 		"fix": [
+			"@composer normalize --diff",
 			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --ansi"
 		],
 		"test": [

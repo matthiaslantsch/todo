@@ -21,38 +21,31 @@ use holonet\activerecord\ModelRepository;
  * for tasks that match a certain criteria.
  */
 class TaskList implements IteratorAggregate {
-	/**
-	 * @var ModelRepository $repo Given repository object
-	 */
-	public $repo;
+	public ModelRepository $repo;
 
 	/**
-	 * @var array $conditions Array with conditions of what to select
+	 * Array with conditions of what to select.
 	 */
-	private $conditions = array();
+	private array $conditions = array();
+
+	private bool $hideDone = true;
 
 	/**
-	 * @var array $queryOptions Array with options for the query, compiled from the search options
+	 * Array with options for the query, compiled from the search options.
 	 */
-	private $queryOptions = array();
+	private array $queryOptions = array();
 
 	/**
-	 * @var array|null $tasks The tasks that were found by the search
+	 * The tasks that were found by the search.
 	 */
-	private $tasks;
+	private ?array $tasks = null;
 
-	/**
-	 * @var int $user_id The id of the user
-	 */
-	private $user_id;
+	private int $user_id;
 
-	/**
-	 * @param ModelRepository $repo Reference to the model repository
-	 * @param int $user_id The id of the user the search is for
-	 */
-	public function __construct(ModelRepository $repo, int $user_id) {
+	public function __construct(ModelRepository $repo, int $user_id, bool $hideDone = true) {
 		$this->repo = $repo;
 		$this->user_id = $user_id;
+		$this->setHideDone($hideDone);
 	}
 
 	/**
@@ -93,6 +86,13 @@ class TaskList implements IteratorAggregate {
 		return new ArrayIterator($this->tasks());
 	}
 
+	public function setHideDone(bool $hideDone): void {
+		if ($this->hideDone !== $hideDone) {
+			$this->hideDone = $hideDone;
+			$this->tasks = null;
+		}
+	}
+
 	/**
 	 * small helper function ensuring the value is a "Y-m-d H:i:s" formatted time string.
 	 * @param mixed $value The time value to convert
@@ -121,11 +121,17 @@ class TaskList implements IteratorAggregate {
 	private function tasks(string $manner = 'list'): array {
 		if ($this->tasks === null) {
 			//include overdue tasks
-			$this->queryOptions['AND'] = array('duedate[<]' => date('Y-m-d H:i:s'), 'donedate' => null);
-			$this->tasks = $this->repo->select(TaskModel::class, array(
+			$overdueOption = array('AND' => array('duedate[<]' => date('Y-m-d H:i:s'), 'donedate' => null));
+			$options = array(
 				'idUser' => $this->user_id,
-				'OR' => $this->queryOptions
-			));
+				'OR' => array_merge($this->queryOptions, $overdueOption)
+			);
+
+			if ($this->hideDone) {
+				$options['donedate'] = null;
+			}
+
+			$this->tasks = $this->repo->select(TaskModel::class, $options);
 		}
 
 		if ($manner === 'flat') {
@@ -138,22 +144,26 @@ class TaskList implements IteratorAggregate {
 			$ret = array();
 
 			//especially include overdue tasks
-			$sublist = array();
+			$overdue = array();
 			foreach ($this->tasks as $task) {
 				//check if it's overdue
 				if ($task->duedate->format('db') < date('Y-m-d H:i:s')) {
-					$sublist[] = $task;
+					$overdue[] = $task;
 				}
 			}
 			if ($manner === 'serialisable') {
-				$ret[] = array('name' => 'overdue', 'tasks' => $sublist);
+				$ret[] = array('name' => 'overdue', 'tasks' => $overdue);
 			} else {
-				$ret['overdue'] = $sublist;
+				$ret['overdue'] = $overdue;
 			}
 
 			foreach ($this->conditions as $name => $cond) {
 				$sublist = array();
 				foreach ($this->tasks as $task) {
+					if (in_array($task, $overdue)) {
+						continue;
+					}
+
 					if (is_int($cond)) {
 						if ($task->priority === $cond) {
 							$sublist[] = $task;

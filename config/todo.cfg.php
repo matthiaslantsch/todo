@@ -24,10 +24,14 @@ $config["database"] = array(
 );
 
 $config["vendorInfo"] = array(
-	"namespace" => "holonet"
+	"namespace" => "holonet",
+	"author" => array(
+		"name" => "Matthias Lantsch",
+		"email" => "matthias.lantsch@bluewin.ch"
+	),
+	"license" => "http://www.wtfpl.net/ Do what the fuck you want Public License",
+	"partOf" => "the todo tracking software"
 );
-
-
 
 if(filter_var($_ENV['USE_REMOTE_AUTH_SYSTEM'], FILTER_VALIDATE_BOOLEAN)) {
 	$config["auth"] = array(
