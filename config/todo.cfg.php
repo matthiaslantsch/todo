@@ -38,7 +38,7 @@ if(filter_var($_ENV['USE_REMOTE_AUTH_SYSTEM'], FILTER_VALIDATE_BOOLEAN)) {
 		"realm" => "sphinx_auth",
 		"flow" => \holonet\sphinxauth\SphinxAuthFlow::class,
 		"usermodel" => \holonet\todo\models\UserModel::class,
-		"loginurl" => "",
+		"login_route" => "",
 		"sphinx" => array(
 			"provider_url" => "%env(SPHINX_URL)%",
 			"client_id" => "%env(SPHINX_CLIENT_ID)%",

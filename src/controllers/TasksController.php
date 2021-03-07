@@ -46,6 +46,7 @@ class TasksController extends FWController {
 	public function bankChange(): void {
 		$bank = $this->user->bank;
 		$bank->bank += (int)($this->request->request->get('change'));
+		$this->di_repo->manage($bank);
 		$this->view->set('errors', !$bank->save());
 		$this->respondTo('json');
 	}
@@ -155,7 +156,7 @@ class TasksController extends FWController {
 	public function index(): void {
 		$this->view->set('bank', $this->di_repo->getOrCreate(BankModel::class, array('user' => $this->user)));
 
-		$query = $this->request->query->get('query');
+		$query = $this->request->query->all('query');
 		if (!is_array($query)) {
 			throw $this->notFound('No search query definition was submitted');
 		}
