@@ -112,13 +112,13 @@ class TasksController extends FWController {
 				'critical' => 5,
 				'important' => 4,
 				'Saturday' => array(
-					'from' => date('Y-m-d H:i:s', strtotime('saturday')),
-					'to' => date('Y-m-d H:i:s', strtotime('sunday')),
+					'from' => date('Y-m-d H:i:s', strtotime('saturday this week')),
+					'to' => date('Y-m-d H:i:s', strtotime('sunday this week')),
 				),
 				'Sunday' => array(
-					'from' => date('Y-m-d H:i:s', strtotime('Sunday')),
+					'from' => date('Y-m-d H:i:s', strtotime('sunday this week')),
 					//go to end of sunday => monday midnight
-					'to' => date('Y-m-d H:i:s', strtotime('monday')),
+					'to' => date('Y-m-d H:i:s', strtotime('monday next week')),
 				)
 			));
 		} else {
