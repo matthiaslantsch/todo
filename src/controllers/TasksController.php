@@ -34,7 +34,7 @@ class TasksController extends FWController {
 			return;
 		}
 		/** @var User $sessionUser */
-		$sessionUser = $this->session()->get('user');
+		$sessionUser = $this->sessionUser();
 		/** @var UserModel user */
 		$this->user = $sessionUser->usermodel;
 	}
@@ -46,7 +46,6 @@ class TasksController extends FWController {
 	public function bankChange(): void {
 		$bank = $this->user->bank;
 		$bank->bank += (int)($this->request->request->get('change'));
-		$this->di_repo->manage($bank);
 		$this->view->set('errors', !$bank->save());
 		$this->respondTo('json');
 	}

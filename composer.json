@@ -37,6 +37,13 @@
 			"@composer validate",
 			"@php -d memory_limit=-1 vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --verbose --dry-run --ansi",
 			"@php -d memory_limit=-1 vendor/vimeo/psalm/psalm"
+		],
+		"post-update-cmd": [
+			"@php -d memory_limit=-1 vendor/holonet/holofw/bin/dewit cache::refresh"
+		],
+		"post-install-cmd": [
+			"@php -d memory_limit=-1 vendor/holonet/holofw/bin/dewit cache::refresh",
+			"@php -d memory_limit=-1 vendor/holonet/holofw/bin/dewit db/migrate::dry"
 		]
 	}
 }

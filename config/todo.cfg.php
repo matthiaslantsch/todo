@@ -38,7 +38,7 @@ if(filter_var($_ENV['USE_REMOTE_AUTH_SYSTEM'], FILTER_VALIDATE_BOOLEAN)) {
 		"realm" => "sphinx_auth",
 		"flow" => \holonet\sphinxauth\SphinxAuthFlow::class,
 		"usermodel" => \holonet\todo\models\UserModel::class,
-		"login_route" => "",
+		"login_route" => "homepage",
 		"sphinx" => array(
 			"provider_url" => "%env(SPHINX_URL)%",
 			"client_id" => "%env(SPHINX_CLIENT_ID)%",
@@ -59,3 +59,6 @@ if(filter_var($_ENV['USE_REMOTE_AUTH_SYSTEM'], FILTER_VALIDATE_BOOLEAN)) {
 		"usermodel" => \holonet\todo\models\UserModel::class,
 	);
 }
+
+// set default session lifetime for this application to 1 hour
+$config['session']['lifetime'] = 3600;

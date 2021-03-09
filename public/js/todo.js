@@ -8,7 +8,7 @@ function loadTodos() {
 			$("#table").html(res);
 		},
 		error: function() {
-			alert('Cannot connect to the server at this time :\'(', "danger");
+			location.reload();
 		}
 	});
 
@@ -24,7 +24,7 @@ function taskDone(idTask) {
 			loadTodos();
 		},
 		error: function() {
-			alert('Cannot connect to the server at this time :\'(', "danger");
+			location.reload();
 		}
 	});
 }
@@ -39,7 +39,7 @@ function deleteTask(idTask) {
 			loadTodos();
 		},
 		error: function() {
-			alert('Cannot connect to the server at this time :\'(', "danger");
+			location.reload();
 		}
 	});
 }
@@ -59,7 +59,7 @@ function changeBank(value) {
 			loadTodos();
 		},
 		error: function() {
-			alert('Cannot connect to the server at this time :\'(');
+			location.reload();
 		}
 	});
 }
@@ -89,7 +89,7 @@ $(function() {
 				loadTodos();
 			},
 			error: function() {
-				alert('Cannot connect to the server at this time :\'(');
+				location.reload();
 			}
 		});
 	});
